@@ -77,13 +77,13 @@ else
     echo "Django project $django_project_name already exists. Skipping creation."
 fi
 
-# Step 4: Generate requirements.txt
-echo "==> Step 4: Generating requirements.txt"
+# Step 3.1: Generate requirements.txt
+echo "==> Step 3.1: Generating requirements.txt"
 pip freeze > requirements.txt
 echo "requirements.txt file generated."
 
-# Step 3: Create Dockerfile
-echo "==> Step 3: Creating Dockerfile"
+# Step 3.2: Create Dockerfile
+echo "==> Step 3.2: Creating Dockerfile"
 cat > Dockerfile <<EOL
 # Use the official Python image
 FROM python:3.10-slim
@@ -118,8 +118,8 @@ CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "$django_project_na
 EOL
 echo "Dockerfile created."
 
-# Step 3.1: Create requirements.txt
-echo "==>Step 3.1:Create requirements.txt"
+# Step 3.4: Create requirements.txt
+echo "==>Step 3.4:Create requirements.txt"
 cat > requirements.txt <<EOL
 Django>=4.2,<5.0
 psycopg2>2.9
