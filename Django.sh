@@ -20,6 +20,10 @@ fi
 if ! command -v django-admin &> /dev/null; then
     echo "Django is not installed. Installing Django..."
     pip install django
+    if ! command -v django-admin &> /dev/null; then
+        echo "Error: django-admin command is still not found. Ensure Django is installed and PATH is correctly set."
+        exit 1
+    fi
 fi
 
 if ! command -v docker &> /dev/null; then
@@ -45,9 +49,13 @@ else
     echo "Django project $django_project_name already exists. Skipping creation."
 fi
 
-# Step 2: Generate requirements.txt
+# Step 2: Generate requirements.txt and handle specific dependency issues
 echo "==> Step 2: Generating requirements.txt"
 pip freeze > requirements.txt
+if grep -q "bcc==0.29.1" requirements.txt; then
+    echo "Removing problematic dependency: bcc==0.29.1"
+    sed -i '/bcc==0.29.1/d' requirements.txt
+fi
 if ! grep -q Django requirements.txt; then
     echo "Django==$(django-admin --version)" >> requirements.txt
 fi
@@ -127,19 +135,11 @@ volumes:
 EOL
 echo "docker-compose.yml file created."
 
-# Step 5: Create .env file
-echo "==> Step 5: Creating .env file"
-cat > .env <<EOL
-DJANGO_SECRET_KEY=your_secret_key
-DEBUG=True
-DATABASE_ENGINE=django.db.backends.postgresql
-DATABASE_NAME=dockerdjango
-DATABASE_USERNAME=dbuser
-DATABASE_PASSWORD=dbpassword
-DATABASE_HOST=db
-DATABASE_PORT=5432
-EOL
-echo ".env file created."
+# Step 5: Check for externally-managed environment error
+echo "==> Step 5: Checking for externally-managed-environment"
+if python3 -m ensurepip &> /dev/null; then
+    echo "System-managed environment detected. Consider using a virtual environment for better dependency management."
+fi
 
 # Step 6: Update Django settings.py
 echo "==> Step 6: Updating settings.py"
