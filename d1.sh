@@ -32,7 +32,11 @@ echo "==> Step 1: Setting up a virtual environment"
 venv_dir=".venv"
 if [ ! -d "$venv_dir" ]; then
     echo "Creating a virtual environment in $venv_dir..."
-    python3 -m venv "$venv_dir" || { echo "Failed to create virtual environment."; exit 1; }
+    python3 -m venv "$venv_dir"
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to create the virtual environment. Ensure that the 'python3-venv' package is installed on your system."
+        exit 1
+    fi
 fi
 
 if [ -f "$venv_dir/bin/activate" ]; then
@@ -40,6 +44,8 @@ if [ -f "$venv_dir/bin/activate" ]; then
     echo "Virtual environment activated."
 else
     echo "Error: Virtual environment activation script not found. Please check if the virtual environment was created properly."
+    echo "Diagnostics: Listing contents of $venv_dir"
+    ls -R "$venv_dir"
     exit 1
 fi
 
