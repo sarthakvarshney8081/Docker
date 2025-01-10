@@ -31,10 +31,17 @@ fi
 echo "==> Step 1: Setting up a virtual environment"
 venv_dir=".venv"
 if [ ! -d "$venv_dir" ]; then
-    python3 -m venv "$venv_dir"
-    echo "Virtual environment created at $venv_dir"
+    echo "Creating a virtual environment in $venv_dir..."
+    python3 -m venv "$venv_dir" || { echo "Failed to create virtual environment."; exit 1; }
 fi
-source "$venv_dir/bin/activate"
+
+if [ -f "$venv_dir/bin/activate" ]; then
+    source "$venv_dir/bin/activate"
+    echo "Virtual environment activated."
+else
+    echo "Error: Virtual environment activation script not found. Please check if the virtual environment was created properly."
+    exit 1
+fi
 
 # Step 2: Install Django in the virtual environment
 echo "==> Step 2: Installing Django in the virtual environment"
