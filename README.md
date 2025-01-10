@@ -11,7 +11,7 @@ This repository contains a shell script to automate the deployment of a Django p
 ## How to Use  
 1. Clone the repository.  
 2. Customize the `.env` file with your project-specific values.  
-3. Run the script using `bash deploy.sh`.  
+3. Run the script using `setup_docker_django.sh`.  
 4. Access your Django application at `http://localhost:8000`.  
 
 ## Prerequisites  
